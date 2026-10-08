@@ -1,0 +1,378 @@
+threagile_version: 1.0.0
+
+# NOTE:
+#
+# For a perfect editing experience within your IDE of choice you can easily
+# get model syntax validation and autocompletion (very handy for enum values)
+# as well as live templates: Just import the schema.json into your IDE and assign
+# it as "schema" to each Threagile YAML file. Also try to import individual parts
+# from the live-templates.txt file into your IDE as live editing templates.
+#
+# You might also want to try the REST API when running in server mode...
+
+
+# This is only a stub for simple quick editing and is not complete.
+# For a complete usable example model see the "-create-example-model" option.
+
+
+title: Model Stub
+
+date: 2020-03-31
+
+author:
+  name: John Doe
+  homepage: www.example.com
+
+
+
+
+management_summary_comment: >
+  Just some <b>more</b> custom summary possible here...
+
+business_criticality: important # values: archive, operational, important, critical, mission-critical
+
+
+
+
+business_overview:
+  description: Some more <i>demo text</i> here and even images...
+  images:
+#    - custom-image-1.png: Some dummy image 1
+#    - custom-image-2.png: Some dummy image 2
+
+
+technical_overview:
+  description: Some more <i>demo text</i> here and even images...
+  images:
+#    - custom-image-1.png: Some dummy image 1
+#    - custom-image-2.png: Some dummy image 2
+
+
+
+questions: # simply use "" as answer to signal "unanswered"
+  Some question without an answer?: ""
+  Some question with an answer?: >
+    Some answer
+
+
+
+abuse_cases:
+  Some Abuse Case: >
+    Some Description
+
+
+security_requirements:
+  Some Security Requirement: Some Description
+
+
+
+# Tags can be used for anything, it's just a tag. Also risk rules can act based on tags if you like.
+# Tags can be used for example to name the products used (which is more concrete than the technology types that only specify the type)
+tags_available:
+  - aws
+  - aws:apigateway
+  - aws:dynamodb
+  - aws:ebs
+  - aws:ec2
+  - aws:iam
+  - aws:lambda
+  - aws:rds
+  - aws:s3
+  - aws:sqs
+  - aws:vpc
+  - azure
+  - docker
+  - gcp
+  - git
+  - kubernetes
+  - nexus
+  - ocp
+  - openshift
+  - tomcat
+  - some-tag
+  - some-other-tag
+
+
+
+
+data_assets:
+
+  Some Data Asset:
+    id: some-data
+    description: Some Description
+    usage: business # values: business, devops
+    tags:
+    origin: Some Origin
+    owner: Some Owner
+    quantity: many # values: very-few, few, many, very-many
+    confidentiality: confidential # values: public, internal, restricted, confidential, strictly-confidential
+    integrity: critical # values: archive, operational, important, critical, mission-critical
+    availability: operational # values: archive, operational, important, critical, mission-critical
+    justification_cia_rating: Some Justification
+
+
+
+technical_assets:
+  cliente-web:
+    id: cliente-web
+    title: Navegador Web (Usuario Externo)
+    description: El cliente HTTP (navegador) en el dispositivo del usuario que inicia el acceso a la Notes App a través de internet de forma pública.
+    type: process
+    usage: business
+    technology: browser
+    size: component
+    internet_exposed: true
+    machine: physical
+    encryption: none
+    confidentiality: public
+    integrity: operational
+    availability: operational
+    data_flows:
+      peticiones_usuario:
+        id: peticiones_usuario
+        title: Envío de Peticiones de Usuario
+        description: Tráfico HTTP entrante originado por el usuario para navegar por la interfaz y operar con la API en el puerto 80.
+        destination: nginx
+        protocol: http
+        authentication: none
+        authorization: none
+
+  nginx:
+    id: nginx
+    title: Proxy Reverso Nginx
+    description: Contenedor Nginx que sirve el frontend estático y redirige las llamadas API (/api) al backend.
+    type: process
+    usage: business
+    technology: web-server
+    size: component
+    internet_exposed: true
+    machine: container
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+    data_flows:
+      redireccion_al_backend:
+        id: redireccion_al_backend
+        title: Redirección de llamadas API
+        description: Redirecciona de forma interna peticiones de backend mediante HTTP al puerto 5000.
+        destination: backend
+        protocol: http
+        authentication: none
+        authorization: none
+
+  backend:
+    id: backend
+    title: Backend WSGI Python (Flask con Gunicorn)
+    description: Servidor de aplicación que gestiona la lógica de las notas y expone métricas internas para Prometheus.
+    type: process
+    usage: business
+    technology: web-service-rest
+    size: component
+    internet_exposed: false
+    machine: container
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+    data_flows:
+      conexion_base_datos:
+        id: conexion_base_datos
+        title: Conexión de Base de Datos (psycopg2)
+        description: Conexión de red activa iniciada por la app de Flask para realizar consultas de inserción y lectura en PostgreSQL.
+        destination: postgres
+        protocol: postgres
+        authentication: credentials
+        authorization: credentials
+
+  postgres:
+    id: postgres
+    title: Base de Datos PostgreSQL
+    description: Base de datos relacional PostgreSQL encargada de resguardar los datos de las notas de forma persistente.
+    type: datastore
+    usage: business
+    technology: database
+    size: component
+    internet_exposed: false
+    machine: container
+    encryption: none
+    confidentiality: confidential
+    integrity: critical
+    availability: critical
+
+  prometheus:
+    id: prometheus
+    title: Servidor de Métricas Prometheus
+    description: Sistema de monitoreo que recopila (scrapes) las métricas de rendimiento del ecosistema de la Notes App.
+    type: process
+    usage: devops
+    technology: monitoring
+    size: component
+    internet_exposed: false
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+    machine: container
+    data_flows:
+      scrape_backend:
+        id: scrape_backend
+        title: Recolección de métricas de App
+        description: Peticiones de scraping HTTP GET periódicas hacia el endpoint /metrics del Backend de Flask.
+        destination: backend
+        protocol: http
+        authentication: none
+        authorization: none
+      scrape_node_exporter:
+        id: scrape_node_exporter
+        title: Recolección de métricas de Host
+        description: Peticiones HTTP periódicas hacia el contenedor Node Exporter en el puerto 9100.
+        destination: node-exporter
+        protocol: http
+        authentication: none
+        authorization: none
+      scrape_cadvisor:
+        id: scrape_cadvisor
+        title: Recolección de métricas de Contenedores
+        description: Peticiones HTTP periódicas al agente cAdvisor en el puerto 8080 para monitorear Docker.
+        destination: cadvisor
+        protocol: http
+        authentication: none
+        authorization: none
+
+  grafana:
+    id: grafana
+    title: Visualizador Grafana
+    description: Plataforma web interactiva para visualizar dashboards basados en las métricas consolidadas.
+    type: process
+    usage: devops
+    technology: monitoring
+    size: component
+    internet_exposed: false
+    machine: container
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+    data_flows:
+      consulta_datos_prometheus:
+        id: consulta_datos_prometheus
+        title: Consulta de Métricas de Monitoreo
+        description: Peticiones HTTP periódicas dirigidas al puerto 9090 para obtener la información de los gráficos en tiempo real.
+        destination: prometheus
+        protocol: http
+        authentication: none
+        authorization: none
+
+  node-exporter:
+    id: node-exporter
+    title: Agente NodeExporter
+    description: Contenedor encargado de exponer de forma pasiva las métricas del hardware de la máquina física o virtual host.
+    type: process
+    usage: devops
+    technology: monitoring
+    size: component
+    internet_exposed: false
+    machine: container
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+
+  cadvisor:
+    id: cadvisor
+    title: Agente cAdvisor
+    description: Contenedor encargado de exponer de forma pasiva las métricas de rendimiento internas de los contenedores Docker.
+    type: process
+    usage: devops
+    technology: monitoring
+    size: component
+    internet_exposed: false
+    machine: container
+    encryption: none
+    confidentiality: internal
+    integrity: operational
+    availability: operational
+
+
+
+  Some Other Technical Asset:
+    id: some-other-component
+    description: Some Description
+    type: process # values: external-entity, process, datastore
+    usage: business # values: business, devops
+    used_as_client_by_human: false
+    out_of_scope: false
+    justification_out_of_scope:
+    size: component # values: system, service, application, component
+    technology: web-service-rest # values: see help
+    tags:
+      - some-tag
+      - some-other-tag
+    internet: false
+    machine: virtual # values: physical, virtual, container, serverless
+    encryption: none # values: none, transparent, data-with-symmetric-shared-key, data-with-asymmetric-shared-key, data-with-enduser-individual-key
+    owner: Some Owner
+    confidentiality: confidential # values: public, internal, restricted, confidential, strictly-confidential
+    integrity: critical # values: archive, operational, important, critical, mission-critical
+    availability: critical # values: archive, operational, important, critical, mission-critical
+    justification_cia_rating: Some Justification
+    multi_tenant: false
+    redundant: false
+    custom_developed_parts: true
+    data_assets_processed: # sequence of IDs to reference
+      - some-data
+    data_assets_stored: # sequence of IDs to reference
+    data_formats_accepted: # sequence of formats like: json, xml, serialization, file, csv
+      - xml
+    communication_links:
+
+
+
+trust_boundaries:
+  notes-app-network:
+    id: notes-app-network
+    title: Red Interna de la Notes App
+    description: Límite de confianza de la red privada de contenedores.
+    type: execution-environment
+    technical_assets_inside:
+      - nginx
+      - backend
+      - postgres
+      - prometheus
+      - grafana
+      - node-exporter
+      - cadvisor
+
+
+shared_runtimes:
+
+
+
+
+individual_risk_categories: # used for adding custom manually identified risks
+
+# NOTE:
+# For risk tracking each risk-id needs to be defined (the string with the @ sign in it). These unique risk IDs
+# are visible in the PDF report (the small grey string under each risk), the Excel (column "ID"), as well as the JSON responses.
+# Some risk IDs have only one @ sign in them, while others multiple. The idea is to allow for unique but still speaking IDs.
+# Therefore each risk instance creates its individual ID by taking all affected elements causing the risk to be within an @-delimited part.
+# Using wildcards (the * sign) for parts delimited by @ signs allows to handle groups of certain risks at once. Best is to lookup the IDs
+# to use in the created Excel file. Alternatively a model macro "seed-risk-tracking" is available that helps in initially
+# seeding the risk tracking part here based on already identified and not yet handled risks.
+risk_tracking:
+
+
+
+#diagram_tweak_edge_layout: spline # values: spline, polyline, false, ortho (this suppresses edge labels), curved (this suppresses edge labels and can cause problems with edges)
+
+#diagram_tweak_suppress_edge_labels: true
+#diagram_tweak_layout_left_to_right: true
+#diagram_tweak_nodesep: 2
+#diagram_tweak_ranksep: 2
+#diagram_tweak_invisible_connections_between_assets:
+#  - tech-asset-source-id-A:tech-asset-target-id-B
+#  - tech-asset-source-id-C:tech-asset-target-id-D
+#diagram_tweak_same_rank_assets:
+#  - tech-asset-source-id-E:tech-asset-target-id-F:tech-asset-source-id-G:tech-asset-target-id-H
+#  - tech-asset-source-id-M:tech-asset-target-id-N:tech-asset-source-id-O

@@ -1,0 +1,4 @@
+### Auditoría Bloqueante de Seguridad (Andon Cord) 🛡️
+| Evaluación | Severidades | Política de Control |
+|------------|-------------|---------------------|
+| **Contenedor, SCA e IaC Renderizado** | `HIGH, CRITICAL` | **Andon Cord Activo** (Bloquea si hay CVEs) |
