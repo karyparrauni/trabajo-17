@@ -27,7 +27,15 @@ jobs:
 
       - name: Compilar imagen Docker
         run: |
-          docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} ./backend
+          if [ -d "./devops-TP06/backend" ]; then
+            docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} ./devops-TP06/backend
+          elif [ -d "./guia-10/backend" ]; then
+            docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} ./guia-10/backend
+          elif [ -d "./backend" ]; then
+            docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} ./backend
+          else
+            docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
+          fi
 
       - name: Exportar imagen a tarball efímero
         run: |
